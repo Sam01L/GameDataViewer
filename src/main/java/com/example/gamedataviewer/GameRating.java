@@ -2,59 +2,73 @@ package com.example.gamedataviewer;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class GameRating extends VideoGames {
-    int MetaScore;
-    boolean RatedE;
 
-    public GameRating(int rank, String title, LocalDate releaseDate, boolean multiPlatform) {
+    int metaScore;
+    String rating;
+
+    public GameRating(int rank, String title, LocalDate releaseDate, boolean multiPlatform, int metaScore, String rating) {
         super(rank, title, releaseDate, multiPlatform);
+        this.metaScore = metaScore;
+        this.rating = rating;
     }
 
-
     public String toString() {
-        //String
-        return super.toString();
+        return super.toString() +
+                ", MetaScore: " + metaScore +
+                ", Rating: " + rating;
     }
 
     public static void readGameRatingData() throws Exception {
-        //GameRatingData.readGameRatingData();
 
-        File myData = new File("GameRatingData");
-        Scanner myReader = new Scanner(myData);
-        String firstLine = myReader.nextLine();
-        while (myReader.hasNextLine()) {
-            String data = myReader.nextLine();
-            Scanner lineScanner = new Scanner(data);
-            lineScanner.useDelimiter("\t");
-            System.out.println(data);
+        File file = new File("GameRatingData");
+        Scanner sc = new Scanner(file);
 
-            //must-play
-            //1. The Legend of Zelda: Ocarina of Time
-            //Nov 23, 1998  •  Rated E
-            //As a young boy, Link is tricked by Ganondorf, the King of the Gerudo Thieves. The evil human uses Link to gain access to the Sacred Realm, where he places his tainted hands on Triforce and transforms the beautiful Hyrulean landscape into a barren wasteland. Link is determined to fix the problems he helped to create, so with the help of Rauru he travels through time gathering the powers of the Seven Sages.
-            //99
-            //Metascore
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
-            String copyChunk = lineScanner.next();
-            copyChunk = copyChunk.replace("M", "");
+        while (sc.hasNextLine()) {
 
-            //LocalDate game1Date = LocalDate.of(2011, 11, 18);
+            String line = sc.nextLine().trim();
+            if (line.isEmpty()) continue;
 
-            int rank = Integer.parseInt(copyChunk);
-            String title = lineScanner.next();
-            boolean multiPlatform = lineScanner.nextBoolean();
+            if (!line.equalsIgnoreCase("must-play"))
+                continue;
 
-            LocalDate game1RatingDate = LocalDate.of(1998, 11, 23);
-            new GameRating(rank, title, game1RatingDate, multiPlatform);
 
+
+
+            String titleLine = sc.nextLine().trim();
+            int dotIndex = titleLine.indexOf(".");
+            int rank = Integer.parseInt(titleLine.substring(0, dotIndex));
+            String title = titleLine.substring(dotIndex + 1).trim();
+
+            String dateRateLine = sc.nextLine().trim();
+            String datePart = dateRateLine.split("•")[0].trim();
+            LocalDate date = LocalDate.parse(datePart, dateFormat);
+
+            String rating = "Unknown";
+            if (dateRateLine.contains("Rated"))
+                rating = dateRateLine.substring(dateRateLine.indexOf("Rated")).replace("Rated", "").trim();
+
+            boolean multiPlatform = false;
+
+            String scoreLine = "";
+            while (sc.hasNextLine()) {
+                scoreLine = sc.nextLine().trim();
+                if (scoreLine.matches("\\d+")) break;
+            }
+
+            int metaScore = Integer.parseInt(scoreLine);
+
+            sc.nextLine();
+
+
+            new GameRating(rank, title, date, multiPlatform, metaScore, rating);
         }
 
-
-
-
+        sc.close();
     }
 }
-
-

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamedataviewer.HelloController">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
          <padding>
@@ -37,9 +37,9 @@
             <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Games" />
             <TableView fx:id="allGamesListView" prefHeight="200.0" prefWidth="320.0">
               <columns>
-                <TableColumn prefWidth="60.0" text="Rank" />
-                <TableColumn prefWidth="180.0" text="Title" />
-                  <TableColumn text="Type" />
+                <TableColumn fx:id="gameRankColumn" prefWidth="60.0" text="Rank" />
+                <TableColumn fx:id="gameTitleColumn" prefWidth="180.0" text="Title" />
+                  <TableColumn fx:id="gamePlatformColumn" text="MP" />
               </columns>
             </TableView>
          </children>
